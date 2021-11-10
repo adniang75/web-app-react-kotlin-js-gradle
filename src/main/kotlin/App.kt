@@ -9,20 +9,36 @@ import kotlinx.serialization.json.Json
 import styled.css
 import styled.styledDiv
 
+
+suspend fun fetchVideo(id: Int): Video {
+    val response = window
+        .fetch("https://my-json-server.typicode.com/kotlin-hands-on/kotlinconf-json/videos/$id")
+        .await()
+        .text()
+        .await()
+    return Json.decodeFromString(response)
+}
+
+suspend fun fetchVideos(): List<Video> = coroutineScope {
+    (1..25).map { id ->
+        async {
+            fetchVideo(id)
+        }
+    }.awaitAll()
+}
+
+val mainScope = MainScope()
+
 val app = fc<Props> {
     var currentVideo: Video? by useState(null)
-    var unwatchedVideos: List<Video> by useState(
-        listOf(
-            Video(1, "Building and breaking things", "John Doe", "https://youtu.be/PsaFVLr8t4E"),
-            Video(2, "The development process", "Jane Smith", "https://youtu.be/PsaFVLr8t4E"),
-            Video(3, "The Web 7.0", "Matt Miller", "https://youtu.be/PsaFVLr8t4E")
-        )
-    )
-    var watchedVideos: List<Video> by useState(
-        listOf(
-            Video(4, "Mouseless development", "Tom Jerry", "https://youtu.be/PsaFVLr8t4E")
-        )
-    )
+    var unwatchedVideos: List<Video> by useState(emptyList())
+    var watchedVideos: List<Video> by useState(emptyList())
+
+    useEffectOnce {
+        mainScope.launch {
+            unwatchedVideos = fetchVideos()
+        }
+    }
 
     h1 {
         +"KotlinConf Explorer"
