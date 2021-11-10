@@ -5,19 +5,20 @@ import react.dom.*
 
 external interface VideoListProps : Props {
     var videos: List<Video>
+    var selectedVideo: Video?
+    var onSelectVideo: (Video) -> Unit
 }
 
 val videoList = fc<VideoListProps> { props ->
-    var selectedVideo: Video? by useState(null)
     for (video in props.videos) {
         p {
             key = video.id.toString()
             attrs {
                 onClickFunction = {
-                    selectedVideo = video
+                    props.onSelectVideo(video)
                 }
             }
-            if (video == selectedVideo) {
+            if (video == props.selectedVideo) {
                 +"▶ "
             }
             +"${video.speaker}: ${video.title}"

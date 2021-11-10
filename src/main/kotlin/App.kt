@@ -10,6 +10,8 @@ import styled.css
 import styled.styledDiv
 
 val app = fc<Props> {
+    var currentVideo: Video? by useState(null)
+
     h1 {
         +"KotlinConf Explorer"
     }
@@ -20,6 +22,10 @@ val app = fc<Props> {
         child(videoList) {
             attrs {
                 videos = unwatchedVideos
+                selectedVideo = currentVideo
+                onSelectVideo = { video ->
+                    currentVideo = video
+                }
             }
         }
 
@@ -29,6 +35,10 @@ val app = fc<Props> {
         child(videoList) {
             attrs {
                 videos = watchedVideos
+                selectedVideo = currentVideo
+                onSelectVideo = { video ->
+                    currentVideo = video
+                }
             }
         }
     }
