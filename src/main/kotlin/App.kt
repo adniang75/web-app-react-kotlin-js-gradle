@@ -1,14 +1,17 @@
 import kotlinx.browser.window
 import kotlinx.coroutines.*
+import kotlinx.css.padding
+import kotlinx.css.px
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import react.Props
 import react.dom.div
-import react.dom.h1
 import react.dom.h3
 import react.fc
 import react.useEffectOnce
 import react.useState
+import styled.css
+import styled.styledDiv
 
 val mainScope = MainScope()
 
@@ -19,10 +22,29 @@ val app = fc<Props> {
     useEffectOnce {
         mainScope.launch { unwatchedVideos = fetchVideos() }
     }
-    h1 {
-        +"KotlinConf Explorer"
-    }
     div {
+        currentVideo?.let { curr ->
+            child(videoPlayer) {
+                attrs {
+                    video = curr
+                    unwatchedVideo = curr in unwatchedVideos
+                    onWatchedButtonPressed = {
+                        if (video in unwatchedVideos) {
+                            unwatchedVideos = unwatchedVideos - video
+                            watchedVideos = watchedVideos + video
+                        } else {
+                            watchedVideos = watchedVideos - video
+                            unwatchedVideos = unwatchedVideos + video
+                        }
+                    }
+                }
+            }
+        }
+        styledDiv {
+            css {
+                padding(all = 10.px)
+            }
+        }
         h3 { +"Videos to watch" }
         child(videoList) {
             attrs {
@@ -40,23 +62,6 @@ val app = fc<Props> {
                 selectedVideo = currentVideo
                 onSelectVideo = { video ->
                     currentVideo = video
-                }
-            }
-        }
-    }
-    currentVideo?.let { curr ->
-        child(videoPlayer) {
-            attrs {
-                video = curr
-                unwatchedVideo = curr in unwatchedVideos
-                onWatchedButtonPressed = {
-                    if (video in unwatchedVideos) {
-                        unwatchedVideos = unwatchedVideos - video
-                        watchedVideos = watchedVideos + video
-                    } else {
-                        watchedVideos = watchedVideos - video
-                        unwatchedVideos = unwatchedVideos + video
-                    }
                 }
             }
         }

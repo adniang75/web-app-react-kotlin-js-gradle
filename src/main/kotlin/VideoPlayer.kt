@@ -17,8 +17,8 @@ external interface VideoPlayerProps : Props {
 val videoPlayer = fc<VideoPlayerProps> { props ->
     styledDiv {
         css {
-            position = Position.absolute
-            top = 10.px
+            //position = Position.relative
+            top = 150.px
             right = 10.px
         }
         h3 {
