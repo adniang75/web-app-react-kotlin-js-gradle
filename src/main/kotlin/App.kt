@@ -1,13 +1,20 @@
-import kotlinx.css.*
 import react.Props
-import react.dom.*
+import react.dom.div
+import react.dom.h1
+import react.dom.h3
 import react.fc
 import react.useState
-import styled.css
-import styled.styledDiv
 
 val app = fc<Props> {
     var currentVideo: Video? by useState(null)
+    var unwatchedVideos: List<Video> by useState(listOf(
+        Video(1, "Building and breaking things", "John Doe", VIDEO_URL),
+        Video(2, "The development process", "Jane Smith", VIDEO_URL),
+        Video(3, "The Web 7.0", "Matt Miller", VIDEO_URL)
+    ))
+    var watchedVideos: List<Video> by useState(listOf(
+        Video(4, "Mouseless development", "Tom Jerry", VIDEO_URL)
+    ))
     h1 {
         +"KotlinConf Explorer"
     }
@@ -33,16 +40,20 @@ val app = fc<Props> {
             }
         }
     }
-    styledDiv {
-        css {
-            position = Position.absolute
-            top = 10.px
-            right = 10.px
-        }
-        h3 { +"John Doe: Building and breaking things" }
-        img {
+    currentVideo?.let { curr ->
+        child(videoPlayer) {
             attrs {
-                src = "https://via.placeholder.com/640x360.png?text=Video+Player+Placeholder"
+                video = curr
+                unwatchedVideo = curr in unwatchedVideos
+                onWatchedButtonPressed = {
+                    if (video in unwatchedVideos) {
+                        unwatchedVideos = unwatchedVideos - video
+                        watchedVideos = watchedVideos + video
+                    } else {
+                        watchedVideos = watchedVideos - video
+                        unwatchedVideos = unwatchedVideos + video
+                    }
+                }
             }
         }
     }
