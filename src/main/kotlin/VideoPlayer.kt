@@ -3,7 +3,6 @@ import kotlinx.html.js.onClickFunction
 import react.Props
 import react.dom.attrs
 import react.dom.h3
-import react.dom.img
 import react.fc
 import styled.css
 import styled.styledButton
@@ -41,9 +40,29 @@ val videoPlayer = fc<VideoPlayerProps> { props ->
                 +"Mark as unwatched"
             }
         }
-        img {
+        styledDiv {
+            css {
+                display = Display.flex
+                marginBottom = 10.px
+            }
+            emailShareButton {
+                attrs.url = props.video.videoUrl
+                emailIcon {
+                    attrs.size = 32
+                    attrs.round = true
+                }
+            }
+            telegramShareButton {
+                attrs.url = props.video.videoUrl
+                telegramIcon {
+                    attrs.size = 32
+                    attrs.round = true
+                }
+            }
+        }
+        reactPlayer {
             attrs {
-                src = "https://via.placeholder.com/640x360.png?text=Video+Player+Placeholder"
+                url = props.video.videoUrl
             }
         }
     }
