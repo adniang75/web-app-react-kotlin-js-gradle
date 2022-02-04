@@ -2,10 +2,12 @@ import kotlinx.css.*
 import react.Props
 import react.dom.*
 import react.fc
+import react.useState
 import styled.css
 import styled.styledDiv
 
 val app = fc<Props> {
+    var currentVideo: Video? by useState(null)
     h1 {
         +"KotlinConf Explorer"
     }
@@ -14,12 +16,20 @@ val app = fc<Props> {
         child(videoList) {
             attrs {
                 videos = unwatchedVideos
+                selectedVideo = currentVideo
+                onSelectVideo = { video ->
+                    currentVideo = video
+                }
             }
         }
         h3 { +"Videos watched" }
         child(videoList) {
             attrs {
                 videos = watchedVideos
+                selectedVideo = currentVideo
+                onSelectVideo = { video ->
+                    currentVideo = video
+                }
             }
         }
     }
